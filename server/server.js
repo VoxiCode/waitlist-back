@@ -6,14 +6,23 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const app = express();
-const port = process.env.PORT || 3001;
+const port = process.env.PORT || 80;
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-app.use(cors());
+app.disable('x-powered-by');
+
+app.use(cors({
+  origin: '*',  
+  methods: ['GET', 'POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
+app.options('*', cors());
+
 app.use(express.json());
 
-app.post('/api/subscribe', async (req, res) => {
+app.post('/subscribe', async (req, res) => {
   try {
     const { email } = req.body;
 
